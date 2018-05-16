@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: default_path_to_deeplink
+        uri: http://noop.com
+        order: 10000
+        predicates:
+        - Path=/
+        filters:
+        - RewritePathFromHostName=/website/%s/home,301
