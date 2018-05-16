@@ -15,7 +15,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public class RewritePathFromHostNameFilterFactoryTest {
+public class RedirectToPathFromHostNameFilterFactoryTest {
 
 
     @LocalServerPort

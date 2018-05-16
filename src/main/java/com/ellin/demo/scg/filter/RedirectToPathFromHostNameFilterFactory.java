@@ -10,19 +10,19 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 import java.util.List;
 
-public class RewritePathFromHostNameFilterFactory extends AbstractGatewayFilterFactory<RewritePathFromHostNameFilterFactory.Config> {
+public class RedirectToPathFromHostNameFilterFactory extends AbstractGatewayFilterFactory<RedirectToPathFromHostNameFilterFactory.Config> {
 
 
     public static final String URL_KEY = "url";
     public static final String REDIRECT_KEY="redirectCode";
 
-    public RewritePathFromHostNameFilterFactory(){
-        super(RewritePathFromHostNameFilterFactory.Config.class);
+    public RedirectToPathFromHostNameFilterFactory(){
+        super(RedirectToPathFromHostNameFilterFactory.Config.class);
     }
 
     @Override
     public String name(){
-        return "RewritePathFromHostName";
+        return "RedirectToPathFromHostName";
     }
 
     @Override
@@ -30,7 +30,7 @@ public class RewritePathFromHostNameFilterFactory extends AbstractGatewayFilterF
         return Arrays.asList(URL_KEY,REDIRECT_KEY);
     }
 
-    public GatewayFilter apply(RewritePathFromHostNameFilterFactory.Config config) {
+    public GatewayFilter apply(RedirectToPathFromHostNameFilterFactory.Config config) {
 
         String replacement = config.url;
 
@@ -42,33 +42,24 @@ public class RewritePathFromHostNameFilterFactory extends AbstractGatewayFilterF
 
 
     public GatewayFilter apply(HttpStatus httpStatus, String replacement) {
-        return (exchange, chain) -> {
+        return (exchange, chain) -> chain.filter(exchange).then(Mono.defer(() -> {
+            if (!exchange.getResponse().isCommitted()) {
 
 
+                String host = exchange.getRequest().getURI().getHost();
 
-            return chain.filter(exchange).then(Mono.defer(() -> {
-                if (!exchange.getResponse().isCommitted()) {
+                String newPath = String.format(replacement,host);
 
-
-                    String host = exchange.getRequest().getURI().getHost();
-
-                    String newPath = String.format(replacement,host);
-
-                    ServerWebExchangeUtils.setResponseStatus(exchange, httpStatus);
-                    ServerHttpResponse response = exchange.getResponse();
-                    response.getHeaders().set("Location", newPath);
-                    return response.setComplete();
-                } else {
-                    return Mono.empty();
-                }
-            }));
-        };
+                ServerWebExchangeUtils.setResponseStatus(exchange, httpStatus);
+                ServerHttpResponse response = exchange.getResponse();
+                response.getHeaders().set("Location", newPath);
+                return response.setComplete();
+            } else {
+                return Mono.empty();
+            }
+        }));
     }
 
-
-    private String fixUrl(String requestUrl){
-        return requestUrl;
-    }
 
     public static class Config {
         private String url;

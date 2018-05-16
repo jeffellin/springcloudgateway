@@ -8,4 +8,4 @@ spring:
         predicates:
         - Path=/
         filters:
-        - RewritePathFromHostName=/website/%s/home,301
+        - RedirectToPathFromHostName=/website/%s/home,301

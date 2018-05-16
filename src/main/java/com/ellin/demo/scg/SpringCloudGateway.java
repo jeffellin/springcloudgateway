@@ -1,6 +1,6 @@
 package com.ellin.demo.scg;
 
-import com.ellin.demo.scg.filter.RewritePathFromHostNameFilterFactory;
+import com.ellin.demo.scg.filter.RedirectToPathFromHostNameFilterFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ public class SpringCloudGateway {
 	}
 
 	@Bean
-	RewritePathFromHostNameFilterFactory demoGw() {
-		return new RewritePathFromHostNameFilterFactory();
+	RedirectToPathFromHostNameFilterFactory demoGw() {
+		return new RedirectToPathFromHostNameFilterFactory();
 	}
 }
