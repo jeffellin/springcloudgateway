@@ -24,11 +24,7 @@ public class RedirectToPathFromHostNameFilterFactoryTest {
     protected WebTestClient testClient;
     protected WebClient webClient;
     protected String baseUri;
-
-
-
-
-
+    
     @Before
     public void setup() {
         baseUri = "http://localhost:" + port;

@@ -3,7 +3,7 @@ spring:
     gateway:
       routes:
       - id: default_path_to_deeplink
-        uri: http://noop.com
+        uri: http://httpbin.org/anything
         order: 10000
         predicates:
         - Path=/
