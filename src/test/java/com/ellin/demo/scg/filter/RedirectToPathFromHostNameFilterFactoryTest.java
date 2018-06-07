@@ -24,7 +24,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = DEFINED_PORT)
-@TestPropertySource(properties = {"pathURI=http://localhost:9999/httpbin/anything","server.port=9999"})
+@TestPropertySource(properties = {"pathURI=http://localhost:4848/httpbin/anything","server.port=9999"})
 public class RedirectToPathFromHostNameFilterFactoryTest {
 
 	@Autowired
