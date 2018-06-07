@@ -3,14 +3,20 @@ package com.ellin.demo.scg.filter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.cloud.gateway.route.RouteDefinition;
+import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.Exceptions;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,6 +27,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @TestPropertySource(properties = {"pathURI=http://localhost:9999/httpbin/anything","server.port=9999"})
 public class RedirectToPathFromHostNameFilterFactoryTest {
 
+	@Autowired
+	private RouteDefinitionLocator routeDefinitionLocator;
 
     @LocalServerPort
     protected int port = 0;
@@ -34,7 +42,16 @@ public class RedirectToPathFromHostNameFilterFactoryTest {
         baseUri = "http://localhost:" + port;
         this.webClient = WebClient.create(baseUri);
         this.testClient = WebTestClient.bindToServer().baseUrl(baseUri).build();
+	    routeDefinitionLocator.getRouteDefinitions().toStream().forEach(x->setURI(x));
     }
+
+	private  void setURI(RouteDefinition x) {
+		try {
+			x.setUri(new URI("http://localhost:" + port+"/httpbin/anything"));
+		} catch (URISyntaxException e) {
+			Exceptions.propagate(e);
+		}
+	}
 
     @Test
     public void setRequestHeaderFilterWorks() {
