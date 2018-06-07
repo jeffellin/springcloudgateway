@@ -1,11 +1,19 @@
+pathURI: http://httpbirrn.org/anything
 spring:
   cloud:
     gateway:
       routes:
-      - id: default_path_to_deeplink
-        uri: http://httpbin.org/anything
-        order: 10000
+      - id: medialinks_to_mediaserver
+        uri: ${pathURI}
         predicates:
-        - Path=/
+        - Path=/media
         filters:
-        - RedirectToPathFromHostName=/website/%s/home,301
+        - AddRequestHeader=X-Request-Example, ValueA
+
+ #      - id: default_path_to_deeplink
+#        uri: ${pathURI}
+#        predicates:
+#        - Path=/
+#        filters:
+#        - RedirectToPathFromHostName=/website/%s/home,301
+
